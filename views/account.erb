@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= @name %></title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body id='home'>
+    <h1><%= @name %></h1>
+    <% @report[1..-2].each do |line| %>
+      <p><%= line %></p>
+    <% end %>
+  </body>
+  <br>
+  <a href='/index'>Back to accounts</a>
+</html>
