@@ -1,9 +1,9 @@
 require 'sinatra'
 require 'shotgun'
-
+require 'csv'
 
 class BankTransaction
-  attr_reader :date, :amount, :description, :account
+  attr_reader :date, :amount, :type, :description, :account
   def initialize(date, amount, description, account)
     @date = date
     @amount = amount
@@ -15,18 +15,23 @@ class BankTransaction
     "Date: #{@date} - amount: #{@amount} - #{@description} - #{@account}"
   end
 
-  def debit?
-    @amount.to_f < 0
-  end
+  # def debit?
+  #   @amount.to_f < 0
+  # end
 
-  def credit?
-    @amount.to_f > 0
+  # def credit?
+  #   @amount.to_f > 0
+  # end
+
+  def type
+    return 'debit' if @amount.to_f < 0
+    return 'credit' if @amount.to_f > 0
   end
 end
 
 class BankAccount
-  attr_reader :account_type, :starting_balance, :ending_balance
-  def initialize(type, starting_balance)
+  attr_reader :account_type, :starting_balance, :ending_balance, :transactions
+  def initialize(type, starting_balance=0)
     @account_type = type
     @starting_balance = starting_balance.to_f
     @ending_balance = starting_balance.to_f
@@ -53,24 +58,22 @@ class BankAccount
   end
 
   def report
-    #return an array of lines of text suitable for html
+    # return array of strings for displaying a report in the terminal
     array = []
     array << "==== #{@account_type} ====\n\n"
     array << "Starting Balance: #{currency(@starting_balance)}"
     array << "Ending Balance:   #{currency(@ending_balance)}\n\n"
     @transactions.each do |trans|
-      if trans.credit?
-        type = 'CREDIT'
-      elsif trans.debit?
-        type = 'DEBIT'
-      end
-      array << "#{currency(trans.amount)}  \t#{type}\t#{trans.date} - #{trans.description}"
+      # if trans.credit?
+      #   type = 'CREDIT'
+      # elsif trans.debit?
+      #   type = 'DEBIT'
+      # end
+      array << "#{currency(trans.amount)}  \t#{trans.type.upcase}\t#{trans.date} - #{trans.description}"
     end
     array << "\n========\n"
   end
 end
-
-require 'csv'
 
 def create_accounts(csv)
   accounts = []
@@ -80,7 +83,6 @@ def create_accounts(csv)
   accounts
 end
 
-#Date,Amount,Description,Account
 def read_transactions(csv)
   transactions = []
   CSV.foreach(csv, headers: true) do |row|
@@ -92,6 +94,7 @@ end
 accounts = create_accounts('balances.csv')
 accounts.each {|acc| acc.add_transactions(read_transactions('bank_data.csv'))}
 
+# print report for each acount in the terminal
 # accounts.each do |acc|
 #   puts acc.report
 # end
@@ -99,7 +102,13 @@ accounts.each {|acc| acc.add_transactions(read_transactions('bank_data.csv'))}
 get '/index' do
   @accounts = []
   accounts.each do |acc|
-    @accounts << acc.account_type
+    @accounts << {
+      name: acc.account_type,
+      starting: acc.currency(acc.starting_balance),
+      ending: acc.currency(acc.ending_balance),
+      first: acc.transactions[0].date,
+      last: acc.transactions[-1].date
+    }
   end
   erb :index
 end
@@ -107,7 +116,9 @@ end
 accounts.each do |acc|
   get "/accounts/#{acc.account_type}" do
     @name = acc.account_type
-    @report = acc.report
+    @balance = acc.currency(acc.ending_balance)
+    @transactions = acc.transactions
+    # @report = acc.report
     erb :account
   end
 end

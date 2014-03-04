@@ -1,0 +1,41 @@
+body {
+  color: white;
+  font-family: arial-black, sans-serif;
+  font-size: 1.2em;
+}
+
+#home {
+  background-color: rgb(70,30,70);
+
+}
+
+#account{
+  background-color: rgb(10,80,90);
+}
+
+p {
+  font-family: arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: lightblue;
+}
+
+table {
+  font-size: .8em;
+  font-family: arial, sans-serif;
+}
+
+th {
+  height: 30px;
+  width: 75px;
+  text-align: left;
+  font-style: italic;
+  color: rgb(160,160,160);
+  font-size: 1.1em;
+}
+
+td {
+  padding: 10px 5px;
+}

@@ -8,7 +8,28 @@
   <body id='home'>
     <h1>Accounts</h1>
     <% @accounts.each do |acc| %>
-      <p><a href=<%= 'accounts/' + URI::encode(acc)%>><%= "#{acc}" %></a></p>
+      <p><a href=<%= 'accounts/' + URI::encode(acc[:name])%>><%= "View #{acc[:name]}" %></a></p>
     <% end %>
+    <br>
+    <table id='main_table'>
+      <tr>
+        <th id='Name'>Name</th>
+        <th id='Starting Balance'>Starting Balance</th>
+        <th id='Ending Balance'>Ending Balance</th>
+        <th id='First Transaction'>First Transaction</th>
+        <th id='Last Transaction'>Last Transaction</th>
+      </tr>
+
+      <% @accounts.each do |acc|%>
+        <tr>
+          <td><%= acc[:name] %></td>
+          <td><%= acc[:starting] %></td>
+          <td><%= acc[:ending] %></td>
+          <td><%= acc[:first] %></td>
+          <td><%= acc[:last] %></td>
+        </tr>
+      <% end %>
+    </table>
+
   </body>
 </html>

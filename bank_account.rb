@@ -45,29 +45,11 @@ class BankAccount
     @transactions.map { |trans| trans.description }
   end
 
-  # def report
-  #   #return a hash of starting bal, ending bal, and transactions (value = array of hashes)
-  #   hash = {}
-  #   hash[:starting] = @starting_balance
-  #   hash[:ending] = @ending_balance
-  #   hash[:transactions] = []
-  #   @transactions.each {|trans| hash[:transactions] << trans}
-  # end
-
   def currency(num)
     "$#{'%.2f' % (num)}"
   end
 
-  # def date(date_string)
-  #   month = date_string[0..1]
-  #   day = date_string[3..4]
-  #   year = date_string[-4..-1]
-  #   date = Time.new(year, month, day)
-  #   date.strftime('%m/%d/%Y')
-  # end
-
   def report
-    #return an array of lines of text suitable for html
     array = []
     array << "==== #{@account_type} ====\n\n"
     array << "Starting Balance: #{currency(@starting_balance)}"
@@ -94,7 +76,6 @@ def create_accounts(csv)
   accounts
 end
 
-#Date,Amount,Description,Account
 def read_transactions(csv)
   transactions = []
   CSV.foreach(csv, headers: true) do |row|
@@ -104,9 +85,5 @@ def read_transactions(csv)
 end
 
 accounts = create_accounts('balances.csv')
-puts accounts
 accounts.each {|acc| acc.add_transactions(read_transactions('bank_data.csv'))}
-
-accounts.each do |acc|
-  puts acc.report
-end
+accounts.each {|acc| puts acc.report}

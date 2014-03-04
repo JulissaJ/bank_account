@@ -2,15 +2,29 @@
 <html>
   <head>
     <title><%= @name %></title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style.css" />
   </head>
+  <body id='account'>
+    <h2><%= @name %></h2>
+    <p><strong>Balance: </strong><%= @balance %></p>
+    <table id='account_table'>
+        <tr>
+          <th id='Date'>Date</th>
+          <th id='Description'>Description</th>
+          <th id='Type'>Type</th>
+          <th id='Amount'>Amount</th>
+        </tr>
 
-  <body id='home'>
-    <h1><%= @name %></h1>
-    <% @report[1..-2].each do |line| %>
-      <p><%= line %></p>
-    <% end %>
+        <% @transactions.reverse_each do |trans|%>
+          <tr>
+            <td><%= trans.date %></td>
+            <td><%= trans.description %></td>
+            <td><%= trans.type.upcase %></td>
+            <td><%= trans.amount %></td>
+          </tr>
+        <% end %>
+    </table>
   </body>
   <br>
-  <a href='/index'>Back to accounts</a>
+  <a href='/index'>Back to Accounts</a>
 </html>
